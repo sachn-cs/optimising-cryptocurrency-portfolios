@@ -90,7 +90,9 @@ def main() -> None:
 
     retry_config = RetryConfig(max_attempts=3, initial_backoff_seconds=0.05)
     if arguments.prices_csv:
-        prices = execute_with_retry(lambda: load_price_data(arguments.prices_csv, date_col=arguments.date_col), retry_config)
+        prices = execute_with_retry(
+            lambda: load_price_data(arguments.prices_csv, date_col=arguments.date_col), retry_config
+        )
     else:
         prices = generate_synthetic_prices()
 

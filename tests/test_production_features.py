@@ -12,6 +12,7 @@ from cps.execution import (
     compute_total_cost_rate,
 )
 from cps.governance import ForecastGovernance
+from cps.pipeline import PipelineConfig
 from cps.resilience import RetryConfig, execute_with_retry
 from cps.risk import RiskLimits, apply_weight_cap, validate_trade_risk
 from cps.runner import (
@@ -19,7 +20,6 @@ from cps.runner import (
     ensure_idempotent_run,
     mark_run_complete,
 )
-from cps.pipeline import PipelineConfig
 
 
 def test_execution_costs_reduce_return():
@@ -69,6 +69,7 @@ def test_runner_idempotency(tmp_path: Path):
 
 def test_cli_metrics_file_written(monkeypatch: pytest.MonkeyPatch, tmp_path: Path):
     import sys
+
     from cps import cli
 
     out_dir = tmp_path / "out"

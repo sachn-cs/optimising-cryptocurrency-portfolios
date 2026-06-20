@@ -34,9 +34,7 @@ def compute_ledoit_wolf_constant_variance_covariance(
     gamma = np.linalg.norm(sample_covariance - target_covariance, ord="fro") ** 2
     kappa = phi / gamma if gamma > 0 else 0.0
     shrinkage = max(0.0, min(1.0, kappa / observations_count))
-    shrunk_covariance = (
-        shrinkage * target_covariance + (1 - shrinkage) * sample_covariance
-    )
+    shrunk_covariance = shrinkage * target_covariance + (1 - shrinkage) * sample_covariance
     return pd.DataFrame(
         shrunk_covariance,
         index=returns.columns,
@@ -50,12 +48,10 @@ def project_weights_to_simplex(weights: np.ndarray) -> np.ndarray:
         return weights
     sorted_weights = np.sort(weights)[::-1]
     cumulative_sum = np.cumsum(sorted_weights)
-    rho = np.nonzero(
-        sorted_weights * np.arange(1, len(weights) + 1) > (cumulative_sum - 1)
-    )[0][-1]
+    rho = np.nonzero(sorted_weights * np.arange(1, len(weights) + 1) > (cumulative_sum - 1))[0][-1]
     theta = (cumulative_sum[rho] - 1) / (rho + 1.0)
     projected = np.maximum(weights - theta, 0)
-    return projected
+    return np.asarray(projected, dtype=float)
 
 
 def optimize_maximum_sharpe_ratio(
@@ -80,9 +76,7 @@ def optimize_maximum_sharpe_ratio(
         portfolio_std = np.sqrt(max(portfolio_variance, 1e-12))
         gradient = (
             mean_returns * portfolio_std
-            - (portfolio_return - daily_risk_free_rate)
-            * (covariance_matrix @ weights)
-            / portfolio_std
+            - (portfolio_return - daily_risk_free_rate) * (covariance_matrix @ weights) / portfolio_std
         ) / max(portfolio_variance, 1e-12)
         weights = project_weights_to_simplex(weights + learning_step * gradient)
     return pd.Series(weights, index=expected_returns.index)

@@ -58,7 +58,7 @@ def build_strategy_specs() -> list[StrategySpec]:
 
 
 def compute_daily_risk_free_rate(annual_rate: float) -> float:
-    return (1.0 + annual_rate) ** (1.0 / 365.0) - 1.0
+    return float((1.0 + annual_rate) ** (1.0 / 365.0) - 1.0)
 
 
 def build_consensus_partitions(
@@ -70,11 +70,7 @@ def build_consensus_partitions(
     assets = list(train_segment.columns)
     partitions: list[list[set[str]]] = []
     forecast_steps = config.correlation_window_days if strategy.use_prediction else 0
-    prediction = (
-        forecast_matrix(train_segment, forecast_steps, config.forecast_method)
-        if forecast_steps > 0
-        else None
-    )
+    prediction = forecast_matrix(train_segment, forecast_steps, config.forecast_method) if forecast_steps > 0 else None
 
     for run_index in range(config.consensus_runs):
         shift = run_index if strategy.use_shifts else 0
@@ -133,8 +129,8 @@ def run_pipeline(
 
         rebalance_index = config.train_window_days
         while rebalance_index + horizon_days <= len(returns):
-            train_returns = returns.iloc[rebalance_index - config.train_window_days: rebalance_index]
-            future_returns = returns.iloc[rebalance_index: rebalance_index + horizon_days]
+            train_returns = returns.iloc[rebalance_index - config.train_window_days : rebalance_index]
+            future_returns = returns.iloc[rebalance_index : rebalance_index + horizon_days]
 
             for strategy in strategy_specs:
                 partitions, similarity = build_consensus_partitions(train_returns, strategy, config, random_generator)
@@ -142,8 +138,12 @@ def run_pipeline(
                 similarity_key = f"{strategy.name}_h{horizon_days}_t{rebalance_index}"
                 similarity_matrices[similarity_key] = similarity
 
-                stable_clusters = stable_clusters_from_similarity(similarity, list(train_returns.columns), config.majority_threshold)
-                selected_assets = [cluster[int(random_generator.integers(0, len(cluster)))] for cluster in stable_clusters if cluster]
+                stable_clusters = stable_clusters_from_similarity(
+                    similarity, list(train_returns.columns), config.majority_threshold
+                )
+                selected_assets = [
+                    cluster[int(random_generator.integers(0, len(cluster)))] for cluster in stable_clusters if cluster
+                ]
                 if not selected_assets:
                     continue
 

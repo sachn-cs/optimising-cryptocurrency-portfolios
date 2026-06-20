@@ -46,7 +46,9 @@ def omega_ratio(trades: np.ndarray, threshold: float = 0.0) -> float:
     return float(gains / losses)
 
 
-def summarize_strategy(strategy: str, horizon: int, trade_returns: list[float], market_returns: list[float]) -> EvaluationSummary:
+def summarize_strategy(
+    strategy: str, horizon: int, trade_returns: list[float], market_returns: list[float]
+) -> EvaluationSummary:
     t = np.asarray(trade_returns, dtype=float)
     m = np.asarray(market_returns, dtype=float)
     return EvaluationSummary(

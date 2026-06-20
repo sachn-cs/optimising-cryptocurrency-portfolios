@@ -50,7 +50,21 @@ def test_metrics_edge_cases():
 
 def test_cli_smoke(tmp_path: Path):
     out = tmp_path / "o"
-    cmd = [sys.executable, "-m", "cps.cli", "--output-dir", str(out), "--run-dir", str(out / "runs"), "--forecast-method", "naive", "--horizons", "1", "--consensus-runs", "4"]
+    cmd = [
+        sys.executable,
+        "-m",
+        "cps.cli",
+        "--output-dir",
+        str(out),
+        "--run-dir",
+        str(out / "runs"),
+        "--forecast-method",
+        "naive",
+        "--horizons",
+        "1",
+        "--consensus-runs",
+        "4",
+    ]
     proc = subprocess.run(cmd, capture_output=True, text=True)
     assert proc.returncode == 0, proc.stderr
     assert (out / "trades.csv").exists()

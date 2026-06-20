@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import networkx as nx
 import numpy as np
 import pandas as pd
-import networkx as nx
 
 
 def correlation_distance_matrix(returns_window: pd.DataFrame) -> pd.DataFrame:
@@ -59,7 +59,9 @@ def consensus_similarity_matrix(
     return sim
 
 
-def stable_clusters_from_similarity(similarity: np.ndarray, assets: list[str], threshold: float = 0.5) -> list[list[str]]:
+def stable_clusters_from_similarity(
+    similarity: np.ndarray, assets: list[str], threshold: float = 0.5
+) -> list[list[str]]:
     if similarity.shape[0] != len(assets):
         raise ValueError("Similarity matrix and assets length mismatch")
     g = nx.Graph()

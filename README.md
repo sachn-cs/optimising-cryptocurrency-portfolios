@@ -1,48 +1,46 @@
 # Crypto Portfolio System
 
-Production-hardened implementation of the framework in `arXiv:2505.24831v2` for cryptocurrency portfolio construction.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/sachn-cs/optimising-cryptocurrency-portfolios/actions/workflows/ci.yml/badge.svg)](https://github.com/sachn-cs/optimising-cryptocurrency-portfolios/actions/workflows/ci.yml)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 
-## Core Capabilities
-- Return forecasting (`naive`, `arima`)
-- Rolling correlation networks and Louvain clustering
-- Consensus stable cluster extraction
-- Sharpe-ratio portfolio optimization
-- Downside-risk and profitability metrics
+Production-hardened implementation of the framework in [arXiv:2505.24831v2](https://arxiv.org/abs/2505.24831v2) for cryptocurrency portfolio construction through consensus clustering.
 
-## Production Controls
-- Retry and bounded backoff for critical operations
-- Idempotent run execution with run markers
-- Risk limits: asset count, per-asset cap, annualized volatility ceiling
-- Execution costs: transaction cost and slippage applied to net returns
-- Forecast-governance drift checks
-- Structured event logging and metrics emission
+## Features
 
-See [docs/production-readiness.md](/Users/sachin/Research/math/optimising-cryptocurrency-portfolios/docs/production-readiness.md).
-
-## Project Structure
-- `src/cps/` core package
-- `tests/` unit and integration tests
-- `docs/architecture.md` architecture
-- `docs/api.md` API contracts
-- `docs/production-readiness.md` operational controls
+- **Return Forecasting** - Naive and ARIMA-based return prediction
+- **Correlation Networks** - Rolling correlation matrices with Louvain community detection
+- **Consensus Clustering** - Stable cluster extraction across multiple runs
+- **Portfolio Optimization** - Sharpe-ratio maximization with covariance regularization
+- **Risk Management** - Asset count limits, per-asset caps, volatility ceilings
+- **Execution Modeling** - Transaction costs and slippage applied to net returns
+- **Production Controls** - Retry logic, idempotent runs, structured logging
+- **Governance** - Forecast drift detection and MSE tracking
 
 ## Installation
+
 ```bash
-pip install -e .[dev]
+git clone https://github.com/sachn-cs/optimising-cryptocurrency-portfolios.git
+cd optimising-cryptocurrency-portfolios
+pip install -e ".[dev]"
 ```
 
-## Run
-Synthetic data:
+## Usage
+
+### Synthetic Data
+
 ```bash
 crypto-portfolio --output-dir outputs --run-dir runs
 ```
 
-CSV input:
+### CSV Input
+
 ```bash
 crypto-portfolio --prices-csv /path/to/prices.csv --date-col date --output-dir outputs --run-dir runs
 ```
 
-## Important CLI Flags
+### All Options
+
 ```bash
 crypto-portfolio \
   --train-window-days 180 \
@@ -62,15 +60,104 @@ crypto-portfolio \
   --seed 42
 ```
 
-## Outputs
-- `trades.csv` with gross and net returns
-- `summary.csv` strategy-level metrics
-- `log_returns.csv`
-- `events.jsonl` structured runtime events
-- `metrics.json` counters and timing metrics
+### Python API
 
-## Test and Coverage
-```bash
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src pytest -q
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 PYTHONPATH=src python -m coverage run -m pytest -q && python -m coverage report -m
+```python
+from cps import PipelineConfig, run_pipeline
+
+config = PipelineConfig(forecast_method="arima", random_seed=42)
+artifacts = run_pipeline(prices, config)
 ```
+
+## Outputs
+
+| File | Description |
+|------|-------------|
+| `trades.csv` | Per-rebalance trade records with gross and net returns |
+| `summary.csv` | Strategy-level aggregated metrics |
+| `log_returns.csv` | Cleaned log-returns time series |
+| `events.jsonl` | Structured runtime events |
+| `metrics.json` | Counters and timing metrics |
+
+## Project Structure
+
+```
+optimising-cryptocurrency-portfolios/
+├── src/cps/           # Core package
+│   ├── cli.py         # CLI entrypoint
+│   ├── pipeline.py    # Orchestration
+│   ├── data.py        # Data ingestion
+│   ├── forecast.py    # Return forecasting
+│   ├── networking.py  # Correlation networks
+│   ├── portfolio.py   # Portfolio optimization
+│   ├── risk.py        # Risk constraints
+│   ├── execution.py   # Cost modeling
+│   ├── metrics.py     # Performance metrics
+│   ├── governance.py  # Forecast governance
+│   ├── observability.py # Logging and metrics
+│   ├── resilience.py  # Retry logic
+│   ├── runner.py      # Run management
+│   └── types.py       # Data types
+├── tests/             # Test suite
+├── docs/              # Documentation
+│   ├── architecture.md
+│   ├── api.md
+│   └── production-readiness.md
+└── pyproject.toml     # Project configuration
+```
+
+## Development
+
+```bash
+# Install with dev dependencies and pre-commit hooks
+make dev
+
+# Run all checks (lint, typecheck, test)
+make check
+
+# Or run individually
+make test        # Run tests
+make test-cov    # Run tests with coverage
+make lint        # Run linting
+make lint-fix    # Auto-fix linting issues
+make format      # Format code
+make typecheck   # Run type checking
+make help        # Show all commands
+```
+
+## Tech Stack
+
+- **Python 3.10+**
+- **NumPy** - Numerical computation
+- **pandas** - Data manipulation
+- **NetworkX** - Graph algorithms
+- **statsmodels** - Statistical models (ARIMA)
+- **pytest** - Testing framework
+- **ruff** - Linting and formatting
+- **mypy** - Static type checking
+- **pre-commit** - Git hooks
+
+## Roadmap
+
+- [ ] Additional forecasting methods (GARCH, LSTM)
+- [ ] Real-time data ingestion
+- [ ] Web dashboard
+- [ ] Docker containerization
+- [ ] REST API interface
+- [ ] Multi-asset class support
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+## Code of Conduct
+
+See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+
+## Security
+
+See [SECURITY.md](SECURITY.md) for reporting vulnerabilities.
+
+## License
+
+[MIT](LICENSE)

@@ -9,8 +9,8 @@ from cps.metrics import (
     mes,
     omega_ratio,
     profit_factor,
-    summarize_strategy,
     summaries_to_frame,
+    summarize_strategy,
     var_quantile,
     win_rate,
 )

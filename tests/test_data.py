@@ -48,7 +48,12 @@ def test_log_returns_and_market_proxy():
 def test_clean_price_data_rejects_non_positive_values():
     index = pd.date_range("2024-01-01", periods=4, freq="D")
     prices = pd.DataFrame(
-        {"a": [10.0, 0.0, 11.0, 12.0], "b": [10.0, 11.0, 12.0, 13.0], "c": [1.0, 1.1, 1.2, 1.3], "d": [2.0, 2.1, 2.2, 2.3]},
+        {
+            "a": [10.0, 0.0, 11.0, 12.0],
+            "b": [10.0, 11.0, 12.0, 13.0],
+            "c": [1.0, 1.1, 1.2, 1.3],
+            "d": [2.0, 2.1, 2.2, 2.3],
+        },
         index=index,
     )
     with pytest.raises(ValueError):

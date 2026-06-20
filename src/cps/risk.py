@@ -60,6 +60,6 @@ def validate_trade_risk(
     effective_cap = compute_effective_weight_cap(limits.max_weight_per_asset, len(selected_assets))
     if float(weights.max()) > effective_cap + 1e-8:
         raise ValueError("Per-asset weight exceeds configured cap")
-    annual_volatility = float((weights.to_numpy() @ covariance.to_numpy() @ weights.to_numpy()) ** 0.5) * (365.0 ** 0.5)
+    annual_volatility = float((weights.to_numpy() @ covariance.to_numpy() @ weights.to_numpy()) ** 0.5) * (365.0**0.5)
     if annual_volatility > limits.max_volatility_annual:
         raise ValueError("Portfolio annualized volatility exceeds configured maximum")

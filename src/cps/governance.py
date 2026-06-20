@@ -18,4 +18,4 @@ class ForecastGovernance:
             return False
         baseline = np.mean(self.mse_history[:-1])
         latest = self.mse_history[-1]
-        return latest > baseline * self.drift_threshold_multiplier
+        return bool(latest > baseline * self.drift_threshold_multiplier)
